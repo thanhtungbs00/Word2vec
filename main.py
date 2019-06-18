@@ -164,15 +164,13 @@ def normalize_corpus(corpus, lemmatize=True, only_text_chars=False, tokenize=Fal
 #--------------------------------
 
 def smooth_data(data):
-    data['text'] = data['text'].apply(convert_lower)
-    data['text'] = data['text'].apply(remove_newline)
+    data['text'] = `data['text'].apply(lambda x: remove_newline(x))
     #data['text'] = data['text'].apply(remove_punctuation)        
     #data['text'] = data['text'].apply(stemming)
     #data['text'] = data['text'].apply(keep_text_characters)
-    
     return data
 
-''' Word2vec '''
+''' --------- Word2vec -------------- '''
 
 def split_train_test(data, test_ratio):
     shuffled_indices = np.random.permutation(len(data))
@@ -182,28 +180,33 @@ def split_train_test(data, test_ratio):
     return data.iloc[train_indices], data.iloc[test_indices]
 
 def main():
-    # corpos = load_Data("Shipper.txt")
-    corpos = load_Data("POR.txt")
+    corpos = load_Data("POR.txt")   #Shipper.txt
     corpos = pd.DataFrame(corpos, columns=['text'])
-    
+    corpos['text'] = corpos['text'].apply(convert_lower)
+    #corpos['text'] = corpos['text'].apply(remove_newline) 
+
     ''' create a test set '''
     train_set, test_set = split_train_test(corpos, 0.9)
+
+    print()
+    print("----------------------------------")
     print("Size of training dataset:", len(train_set))
     print("Size of testing dataset:", len(test_set))
 
-    print(train_set.info())
+    print("----------------------------------")
 
-    '''
+    print(train_set.info())
+    print(train_set.head(20))
+    print("----------------------------------")
+    
     #  --- pre-processing--- 
-    print(" Before pre-processing: ")
-    pprint(train_set)
-    
-    
-    #smooth_data(training_data)
-    
+    smooth_data(train_set)
+
+    print()
     print(" After pre-processing: ")
-    pprint(train_set)
-    '''
+    pprint(train_set.head(20))
+    print("----------------------------------")
+    
 if __name__ == "__main__":
     main()
     
